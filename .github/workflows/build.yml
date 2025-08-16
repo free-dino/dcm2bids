@@ -29,7 +29,9 @@ jobs:
 
       - name: Build executable
         run: |
-          pyinstaller --onefile main.py
+          pyinstaller --onefile main.py \
+          --add-data "assets/*;assets" \
+          --icon=assets/brain.ico
 
       - name: Upload build artifact
         uses: actions/upload-artifact@v4

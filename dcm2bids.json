@@ -1,0 +1,104 @@
+{
+  "descriptions": [
+    {
+      "datatype": "anat",
+      "suffix": "FLAIR",
+      "criteria": {
+        "SeriesDescription": "sT2W_FLAIR"
+      },
+      "sidecar_changes": {
+        "ProtocolName": "sT2W_FLAIR SENSE"
+      }
+    },
+    {
+      "datatype": "anat",
+      "suffix": "FLAIR",
+      "criteria": {
+        "SeriesDescription": "esT2W_FLAIR_SENSE"
+      },
+      "sidecar_changes": {
+        "ProtocolName": "esT2W_FLAIR SENSE"
+      }
+    },
+    {
+      "datatype": "anat",
+      "suffix": "T1w",
+      "criteria": {
+        "SeriesDescription": "sT1W_FFE"
+      },
+      "sidecar_changes": {
+        "ProtocolName": "sT1W_FFE SENSE"
+      }
+    },
+    {
+      "datatype": "anat",
+      "suffix": "T1w",
+      "criteria": {
+        "SeriesDescription": "esT1W_FFE SENSE"
+      },
+      "sidecar_changes": {
+        "ProtocolName": "esT1W_FFE SENSE"
+      }
+    },
+    {
+      "datatype": "dwi",
+      "suffix": "dwi",
+      "criteria": {
+        "SeriesDescription": "DWI"
+      },
+      "sidecar_changes": {
+        "ProtocolName": "DWI SENSE"
+      }
+    },
+    {
+      "datatype": "dwi",
+      "suffix": "dwi",
+      "criteria": {
+        "SeriesDescription": "sDWI SENSE"
+      },
+      "sidecar_changes": {
+        "ProtocolName": "sDWI SENSE"
+      }
+    },
+    {
+      "datatype": "anat",
+      "suffix": "angio",
+      "criteria": {
+        "SeriesDescription": "s3DI_TOF_BM"
+      },
+      "sidecar_changes": {
+        "ProtocolName": "s3DI_TOF_BM SENSE"
+      }
+    },
+    {
+      "datatype": "anat",
+      "suffix": "T2w",
+      "criteria": {
+        "SeriesDescription": "sT2W_TSE"
+      },
+      "sidecar_changes": {
+        "ProtocolName": "sT2W_TSE SENSE"
+      }
+    },
+    {
+      "datatype": "anat",
+      "suffix": "T2w",
+      "criteria": {
+        "SeriesDescription": "esT2W_TSE SENSE"
+      },
+      "sidecar_changes": {
+        "ProtocolName": "esT2W_TSE SENSE"
+      }
+    },
+    {
+      "datatype": "anat",
+      "suffix": "T1w",
+      "criteria": {
+        "SeriesDescription": "sT1W_3D_FFE"
+      },
+      "sidecar_changes": {
+        "ProtocolName": "sT1W_3D_FFE SENSE"
+      }
+    }
+  ]
+}

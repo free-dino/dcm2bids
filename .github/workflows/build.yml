@@ -14,10 +14,10 @@ jobs:
         os: [ubuntu-latest, windows-latest]   # build on Linux + Windows
 
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4   # latest checkout
 
       - name: Set up Python
-        uses: actions/setup-python@v4
+        uses: actions/setup-python@v5
         with:
           python-version: "3.12"
 
@@ -32,7 +32,7 @@ jobs:
           pyinstaller --onefile main.py
 
       - name: Upload artifact
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: ${{ runner.os }}-build
           path: dist/*

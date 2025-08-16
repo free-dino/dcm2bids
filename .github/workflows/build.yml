@@ -3,23 +3,23 @@ name: Build Desktop App
 on:
   push:
     tags:
-      - "v*"    # run when you push a version tag like v1.0.0
-  workflow_dispatch:  # allows manual trigger
+      - "v*"
+  workflow_dispatch:
 
 jobs:
   build:
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
-        os: [ubuntu-latest, windows-latest]   # build on Linux + Windows
+        os: [ubuntu-latest, windows-latest]
 
     steps:
-      - uses: actions/checkout@v4   # latest checkout
+      - uses: actions/checkout@v4
 
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
-          python-version: "3.12"
+          python-version: "3.11"
 
       - name: Install dependencies
         run: |
@@ -29,10 +29,12 @@ jobs:
 
       - name: Build executable
         run: |
-          pyinstaller --onefile main.py
+          pyinstaller --onefile app.py
 
-      - name: Upload artifact
+      - name: Upload build artifact
         uses: actions/upload-artifact@v4
         with:
           name: ${{ runner.os }}-build
           path: dist/*
+          if-no-files-found: error   # NEW in v4
+          compression-level: 9       # NEW in v4

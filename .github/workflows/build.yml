@@ -25,6 +25,7 @@ jobs:
           pip install pyinstaller
 
       - name: Build executable
+        shell: cmd
         run: |
           pyinstaller --onefile main.py ^
             --add-data "assets/*;assets" ^

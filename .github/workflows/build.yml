@@ -8,10 +8,7 @@ on:
 
 jobs:
   build:
-    runs-on: ${{ matrix.os }}
-    strategy:
-      matrix:
-        os: [ubuntu-latest, windows-latest]
+    runs-on: windows-latest
 
     steps:
       - uses: actions/checkout@v4
@@ -29,13 +26,13 @@ jobs:
 
       - name: Build executable
         run: |
-          pyinstaller --onefile main.py \
-          --add-data "assets/*;assets" \
-          --icon=assets/brain.ico
+          pyinstaller --onefile main.py ^
+            --add-data "assets/*;assets" ^
+            --icon=assets/brain.ico
 
       - name: Upload build artifact
         uses: actions/upload-artifact@v4
         with:
-          name: ${{ runner.os }}-build
+          name: windows-build
           path: dist/*
           if-no-files-found: error

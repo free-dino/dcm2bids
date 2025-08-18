@@ -4,6 +4,7 @@ import sys
 from gooey import Gooey, GooeyParser
 from run_raw import *
 from run_excel import *
+import shutil
 
 def resource_path(relative_path):
     try:
@@ -12,6 +13,14 @@ def resource_path(relative_path):
         base_path = os.path.abspath(".")
         
     return os.path.join(base_path, relative_path )
+
+def cleanup_tmp_dirs(output_dir):
+    for item in os.listdir(output_dir):
+        full_path = os.path.join(output_dir, item)
+        if os.path.isdir(full_path) and item.startswith("tmp"):
+            print(f"Deleting temporary folder: {full_path}")
+            shutil.rmtree(full_path, ignore_errors=True)
+
 
 @Gooey(
     program_name="DICOM to BIDS Converter",
@@ -73,6 +82,7 @@ def main():
                 print("Error: This mode requires a directory DICOM folder, but you selected a file.")
                 exit(1)
             run_dicom_to_bids(args.source_dicom, args.bids_output)
+            cleanup_tmp_dirs(args.bids_output)
 
         elif args.excel:
             print("Running...")
@@ -80,6 +90,7 @@ def main():
                 print("Error: Choose a directory")
                 exit(1)
             run_excel_dir(args.source_dicom, args.bids_output)
+            cleanup_tmp_dirs(args.bids_output)
 
     except subprocess.CalledProcessError as e:
         print(f"Script failed with exit code {e.returncode}")

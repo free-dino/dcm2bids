@@ -34,20 +34,17 @@ def run_dicom_to_bids(source_dicom: str, bids_output: str, config: str = "dcm2bi
     if not source_dicom.exists():
         print(f"ERROR: Source path '{source_dicom}' not found")
         sys.exit(1)
-
-    # --- Step 1: make output dirs ---
+        
     bids_output.mkdir(parents=True, exist_ok=True)
     datasource.mkdir(parents=True, exist_ok=True)
 
-    # --- Step 2: scaffold if empty ---
     if not any(bids_output.iterdir()):
-        print(f"BIDS output '{bids_output}' is empty → running dcm2bids_scaffold")
+        print(f"BIDS output '{bids_output}' is empty --> running dcm2bids_scaffold")
         subprocess.run(["dcm2bids_scaffold", "-o", str(bids_output)], check=True)
     else:
-        print(f"BIDS output '{bids_output}' is not empty → skipping scaffold")
+        print(f"BIDS output '{bids_output}' is not empty ---> skipping scaffold")
 
-    # --- Step 3: copy source dicoms into sourcedata ---
-    print(f"Copying DICOM data from '{source_dicom}' → '{datasource}'")
+    print(f"Copying DICOM data from '{source_dicom}' ---> '{datasource}'")
     if source_dicom.is_dir():
         # sync all contents
         for item in source_dicom.iterdir():
@@ -60,7 +57,6 @@ def run_dicom_to_bids(source_dicom: str, bids_output: str, config: str = "dcm2bi
         print("ERROR: Source must be a directory containing DICOMs")
         sys.exit(1)
 
-    # --- Step 4: detect patient dirs ---
     patient_dirs = []
     for d in datasource.iterdir():
         if d.is_dir() and contains_dicoms(d):
@@ -73,7 +69,6 @@ def run_dicom_to_bids(source_dicom: str, bids_output: str, config: str = "dcm2bi
         print(f"ERROR: No DICOM files found under '{datasource}'")
         sys.exit(1)
 
-    # --- Step 5: run dcm2bids for each patient ---
     for idx, patient_dir in enumerate(patient_dirs, start=1):
         subject_id = f"{idx:02d}"
         print(f"Processing: {patient_dir.name} → sub-{subject_id}")
@@ -91,4 +86,4 @@ def run_dicom_to_bids(source_dicom: str, bids_output: str, config: str = "dcm2bi
         )
         app.run()
 
-    print("✅ Script finished successfully.")
+    print("Script finished successfully.")

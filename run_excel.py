@@ -4,7 +4,7 @@ import subprocess
 from pathlib import Path
 import shutil
 import pandas as pd
-import tempfile  # <-- Added for cross-platform temp files
+import tempfile
 from dcm2bids import dcm2bids_gen
 
 def resource_path(relative_path):
@@ -15,16 +15,7 @@ def resource_path(relative_path):
         
     return os.path.join(base_path, relative_path )
 
-def check_required_tools() -> None:
-    """Verify required tools are available in PATH."""
-    required_tools = ["dcm2bids_scaffold", "dcm2bids"]
-    missing = [tool for tool in required_tools if not shutil.which(tool)]
-    if missing:
-        print(f"ERROR: Missing required tools: {', '.join(missing)}")
-        sys.exit(1)
-
 def find_excel_file(input_dir: Path) -> Path:
-    """Locate the Excel file in the input directory."""
     excel_files = list(input_dir.glob("*.[xX][lL][sS][xX]")) + list(input_dir.glob("*.[xX][lL][sS]"))
     
     if not excel_files:
@@ -39,9 +30,7 @@ def find_excel_file(input_dir: Path) -> Path:
     return excel_files[0]
 
 def excel_to_temp_csv(excel_file: Path) -> Path:
-    """Convert Excel file to temporary CSV mapping."""
-    # Cross-platform temp file handling
-    temp_dir = Path(tempfile.gettempdir())  # Works on Windows/Linux/Mac
+    temp_dir = Path(tempfile.gettempdir())
     temp_csv = temp_dir / "patient_mapping.csv"
     
     try:
@@ -58,7 +47,6 @@ def excel_to_temp_csv(excel_file: Path) -> Path:
         sys.exit(1)
 
 def process_patient_mapping(csv_file: Path, bids_output: Path) -> None:
-    """Process each patient from the CSV mapping."""
     config = resource_path("dcm2bids.json")
     
     for _, row in pd.read_csv(csv_file).iterrows():
@@ -69,7 +57,7 @@ def process_patient_mapping(csv_file: Path, bids_output: Path) -> None:
             print(f"WARNING: Skipping missing folder '{patient_folder}'")
             continue
         
-        print(f"Processing: {patient_folder.name} → sub-{subject_id}")
+        print(f"Processing: {patient_folder.name} ---> sub-{subject_id}")
         app = dcm2bids_gen.Dcm2BidsGen(
             dicom_dir=[str(patient_folder)],
             participant=subject_id,
@@ -84,12 +72,9 @@ def process_patient_mapping(csv_file: Path, bids_output: Path) -> None:
         app.run()
 
 def run_excel_dir(input_dir: str, bids_output: str) -> None:
-    """Main processing function."""
     input_dir = Path(input_dir).resolve()
     bids_output = Path(bids_output).resolve()
     
-    # --- Validation ---
-    check_required_tools()
     if not input_dir.exists():
         print(f"ERROR: Input directory not found: {input_dir}")
         sys.exit(1)
@@ -100,19 +85,16 @@ def run_excel_dir(input_dir: str, bids_output: str) -> None:
     
     temp_csv = excel_to_temp_csv(excel_file)
     
-    # --- BIDS Setup ---
     bids_output.mkdir(parents=True, exist_ok=True)
     if not any(bids_output.iterdir()):
         print("Creating BIDS scaffold...")
         subprocess.run(["dcm2bids_scaffold", "-o", str(bids_output)], check=True)
     
-    # --- Main Processing ---
     process_patient_mapping(temp_csv, bids_output)
     
-    # --- Cleanup ---
     try:
         temp_csv.unlink()
     except OSError as e:
         print(f"WARNING: Could not delete temp file: {str(e)}")
     
-    print("✅ Script completed successfully")
+    print("Script completed successfully")

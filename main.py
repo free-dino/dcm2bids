@@ -1,6 +1,17 @@
 import subprocess
 import os
+import sys
 from gooey import Gooey, GooeyParser
+from run_raw import *
+from run_excel import *
+
+def resource_path(relative_path):
+    try:
+        base_path = sys._MEIPASS
+    except Exception:
+        base_path = os.path.abspath(".")
+        
+    return os.path.join(base_path, relative_path )
 
 @Gooey(
     program_name="DICOM to BIDS Converter",
@@ -8,7 +19,7 @@ from gooey import Gooey, GooeyParser
     show_stop_button=False,
     layout='column',
     clear_before_run=True,
-    image_dir="assets/"
+    image_dir=resource_path("assets/")
 )
 def main():
     parser = GooeyParser(description="Convert DICOM folder to BIDS format")
@@ -61,18 +72,14 @@ def main():
             if not os.path.isdir(args.source_dicom):
                 print("Error: This mode requires a directory DICOM folder, but you selected a file.")
                 exit(1)
-            subprocess.run(["bash", "run.sh", args.source_dicom, args.bids_output], check=True)
+            run_dicom_to_bids(args.source_dicom, args.bids_output)
 
         elif args.excel:
             print("Running...")
-            if not os.path.isfile(args.source_dicom):
-                print("Error: This mode requires an Excel file, but you selected a directory.")
+            if not os.path.isdir(args.source_dicom):
+                print("Error: Choose a directory")
                 exit(1)
-            ext = os.path.splitext(args.source_dicom)[1].lower()
-            if ext not in ['.xlsx', '.xls']:
-                print(f"Unsupported file type: {ext}. Please provide an Excel file (.xlsx or .xls)")
-                exit(1)
-            subprocess.run(["bash", "manual.sh", args.source_dicom, args.bids_output], check=True)
+            run_excel_dir(args.source_dicom, args.bids_output)
 
     except subprocess.CalledProcessError as e:
         print(f"Script failed with exit code {e.returncode}")

@@ -2,4 +2,6 @@ __pycache__/
 .vscode/
 dicom_data/
 excel_data/
-output/
+out/
+build/
+dist/

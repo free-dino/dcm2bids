@@ -31,11 +31,7 @@ jobs:
 
       - name: Build executable
         run: |
-          pyinstaller --name dcm2bids --onefile --windowed ^
-            --icon=assets/brain.ico ^
-            --add-data "assets;assets" ^
-            --add-data "dcm2bids.json;." ^
-            main.py
+          pyinstaller --name dcm2bids --onefile --windowed --icon=assets/brain.ico --add-data "assets;assets" --add-data "dcm2bids.json;." main.py
 
       - name: Upload artifact
         uses: actions/upload-artifact@v4

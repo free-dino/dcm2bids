@@ -1,4 +1,4 @@
-name: Build with PyInstaller
+name: Build with PyInstaller (Windows)
 
 on:
   push:
@@ -7,11 +7,8 @@ on:
     branches: [ main ]
 
 jobs:
-  build:
-    runs-on: ${{ matrix.os }}
-    strategy:
-      matrix:
-        os: [ubuntu-latest, windows-latest, macos-latest]
+  build-windows:
+    runs-on: windows-latest
 
     steps:
       - name: Checkout code
@@ -29,14 +26,14 @@ jobs:
 
       - name: Build executable
         run: |
-          pyinstaller --name dcm2bids --onefile --windowed \
-            --icon=assets/brain.ico \
-            --add-data "assets:assets" \
-            --add-data "dcm2bids.json:." \
+          pyinstaller --name dcm2bids --onefile --windowed ^
+            --icon=assets/brain.ico ^
+            --add-data "assets;assets" ^
+            --add-data "dcm2bids.json;." ^
             main.py
 
       - name: Upload artifact
         uses: actions/upload-artifact@v4
         with:
-          name: dcm2bids-${{ matrix.os }}
+          name: dcm2bids-windows
           path: dist/*

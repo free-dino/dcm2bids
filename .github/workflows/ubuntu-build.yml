@@ -1,0 +1,51 @@
+name: Build with PyInstaller (Ubuntu)
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  build-ubuntu:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Python 3.12
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+          cache: 'pip'
+
+      - name: Confirm Python version
+        run: python --version
+
+      - name: Install system dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y libgtk-3-dev libglib2.0-dev libgl1-mesa-dev libglu1-mesa-dev \
+              libjpeg-dev libtiff-dev libsdl2-dev libgstreamer1.0-dev libgstreamer-plugins-base1.0-dev \
+              libnotify-dev freeglut3-dev
+
+      - name: Install Python dependencies
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install -r requirements.txt
+          python -m pip install pyinstaller
+
+      - name: Build executable
+        run: |
+          pyinstaller --name dcm2bids --onefile --windowed \
+            --icon=assets/brain.ico \
+            --add-data "assets:assets" \
+            --add-data "dcm2bids.json:." \
+            main.py
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: dcm2bids-ubuntu-py312
+          path: dist/*
